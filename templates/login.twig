@@ -1,0 +1,47 @@
+{% extends "index.twig" %}
+{% block body %}
+<div class="wrapper" id="main">
+    <div class="page-header" style="background-image: url('assets/img/login-image.jpg');">
+        <div class="filter"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-4 col-sm-6 offset-sm-3">
+                    <div class="card card-register">
+                        <h3 class="title">Inks&amp;Nibs</h3>
+                        <form id='loginForm'
+                              name='loginForm' class="register-form" method="post">
+                            <div class="form-group{% if error %} has-danger{% endif %}">
+                            <label>Email</label>
+                            <input id='email'
+                                   name='email'
+                                   class="form-control{% if error %} form-control-danger{% endif %}"
+                                   placeholder="Email">
+
+                            <label>Password</label>
+                            <input type="password"
+                                   id='password'
+                                   name='password'
+                                   class="form-control{% if error %} form-control-danger{% endif %}"
+                                   placeholder="Password">
+                            <button class="btn btn-danger btn-block btn-round">Log In</button>
+                            {% if error %}
+                                <div class="form-control-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="footer register-footer text-center">
+                <h6>&copy;
+                    <script>document.write(new Date().getFullYear())</script>
+                    , made with <i class="fa fa-heart heart"></i> by Rubén
+                    Lacasa Mas
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

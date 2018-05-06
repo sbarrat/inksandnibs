@@ -1,0 +1,13 @@
+<phpunit boostrap="vendor/autoload.php">
+    <testsuite name="Inks">
+        <directory>test</directory>
+    </testsuite>
+    <filter>
+        <whitelist>
+            <directory>src/classes</directory>
+        </whitelist>
+        <exclude>
+            <directory>vendor</directory>
+        </exclude>
+    </filter>
+</phpunit>

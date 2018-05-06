@@ -1,0 +1,19 @@
+{
+    "name": "root/inksandnibs",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ruben Lacasa",
+            "email": "ruben@ensenalia.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.4"
+    },
+    "autoload": {
+        "psr-4": { "Inks\\" : "src/classes"}
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2"
+    }
+}
