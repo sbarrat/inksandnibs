@@ -24,10 +24,8 @@ class Wordpress
         'text' => ''
     ];
     private $envionment = 'real';
-
     /**
      * Wordpress constructor.
-     *
      * @param string $environment
      */
     public function __construct($environment = 'real')
@@ -57,7 +55,6 @@ class Wordpress
 
     /**
      * Agrega el contenido
-     *
      * @param $data
      * @return bool|mixed|string
      */
@@ -69,27 +66,7 @@ class Wordpress
         $this->generateImageContent($data);
         $response = false;
         if ($this->envionment === 'real') {
-            $options = [
-                'http' =>
-                    [
-                        'ignore_errors' => true,
-                        'method' => 'POST',
-                        'header' =>
-                            [
-                                0 => 'authorization: Bearer ' . $this->accessKey,
-                                1 => 'Content-Type: application/x-www-form-urlencoded',
-                            ],
-                        'content' =>
-                            http_build_query([
-                                'title' => $this->content['title'],
-                                'content' => $this->content['text'],
-                                'tags' => $this->content['tags'],
-                                'categories' => $this->content['categories'],
-                                'format' => 'image',
-                                'media_url' => $data['imgUrl']
-                            ]),
-                    ],
-            ];
+            $options = $this->setWordPressOptions($data);
             $context = stream_context_create($options);
             $response = file_get_contents(
                 $this->baseUri . '/posts/new/',
@@ -101,9 +78,9 @@ class Wordpress
         return $response;
     }
 
+
     /**
      * Genera el contenido formateado de la Pluma
-     *
      * @param $data
      */
     public function generateFountainPenContent($data)
@@ -124,7 +101,6 @@ class Wordpress
 
     /**
      * Genera el contenido formateado de la tinta
-     *
      * @param $data
      */
     public function generateInkContent($data)
@@ -145,7 +121,6 @@ class Wordpress
 
     /**
      * Genera el contenido formateado del papel
-     *
      * @param $data
      */
     public function generatePaperContent($data)
@@ -160,7 +135,6 @@ class Wordpress
 
     /**
      * Genera el contenido formateado de la imagen
-     *
      * @param $data
      */
     public function generateImageContent($data)
@@ -168,19 +142,12 @@ class Wordpress
         $alt = $this->content['text'];
         $this->content['text'] = "<p>". $this->content['text']."</p>";
         if ($data['imgUrl'] != '') {
-            $image = "<img src='" . $data['imgUrl'] . "' alt='".$alt.">";
-            if ($data['imgOrigin'] === 'instagram') {
-                $image = "[instagram url=" . $data['imgUrl'] . "]";
-            } else if ($data['imgOrigin'] === 'pinterest') {
-                $image = $data['imgUrl'];
-            }
-            $this->content['text'] .= $image;
+            $this->content['text'] .= $this->setImageOrigin($data, $alt);
         }
     }
 
     /**
      * Devuelve el contenido
-     *
      * @return array
      */
     public function getContent()
@@ -190,7 +157,6 @@ class Wordpress
 
     /**
      * Borra el post creado
-     *
      * @param $postID
      * @return mixed
      */
@@ -218,7 +184,6 @@ class Wordpress
 
     /**
      * Devuelve las categorias del sitio
-     *
      * @return mixed
      */
     public function getCategories()
@@ -236,5 +201,52 @@ class Wordpress
             $context
         );
         return json_decode($response);
+    }
+
+    /**
+     * Genera el contenido a mandar a Wordpress
+     * @param $data
+     * @return array
+     */
+    private function setWordPressOptions($data)
+    {
+        return [
+            'http' =>
+                [
+                    'ignore_errors' => true,
+                    'method' => 'POST',
+                    'header' =>
+                        [
+                            0 => 'authorization: Bearer ' . $this->accessKey,
+                            1 => 'Content-Type: application/x-www-form-urlencoded',
+                        ],
+                    'content' =>
+                        http_build_query([
+                            'title' => $this->content['title'],
+                            'content' => $this->content['text'],
+                            'tags' => $this->content['tags'],
+                            'categories' => $this->content['categories'],
+                            'format' => 'image',
+                            'media_url' => $data['imgUrl']
+                        ]),
+                ],
+        ];
+    }
+
+    /**
+     * Establece un formato en base del origen de la imagen
+     * @param $data
+     * @param $alt
+     * @return string
+     */
+    private function setImageOrigin($data, $alt)
+    {
+        $image = "<img src='" . $data['imgUrl'] . "' alt='".$alt.">";
+        if ($data['imgOrigin'] === 'instagram') {
+            $image = "[instagram url=" . $data['imgUrl'] . "]";
+        } else if ($data['imgOrigin'] === 'pinterest') {
+            $image = $data['imgUrl'];
+        }
+        return $image;
     }
 }
